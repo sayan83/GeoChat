@@ -1,0 +1,6 @@
+@GeoChat.RoomsAPI_HostAddress = http://localhost:5078
+
+GET {{GeoChat.RoomsAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
