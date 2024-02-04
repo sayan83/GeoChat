@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoChat.ChatAPI", "GeoChat.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoChat.RoomsAPI", "GeoChat.RoomsAPI\GeoChat.RoomsAPI.csproj", "{66A138FB-1F9B-4D38-9CA1-FBC96E43176D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoChat.DataLayer", "GeoChat.DataLayer\GeoChat.DataLayer.csproj", "{9C0EE8AB-0335-43CB-9623-FC4FDEB463F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{66A138FB-1F9B-4D38-9CA1-FBC96E43176D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66A138FB-1F9B-4D38-9CA1-FBC96E43176D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66A138FB-1F9B-4D38-9CA1-FBC96E43176D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C0EE8AB-0335-43CB-9623-FC4FDEB463F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C0EE8AB-0335-43CB-9623-FC4FDEB463F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C0EE8AB-0335-43CB-9623-FC4FDEB463F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C0EE8AB-0335-43CB-9623-FC4FDEB463F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
