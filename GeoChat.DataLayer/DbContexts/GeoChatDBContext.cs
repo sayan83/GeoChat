@@ -5,10 +5,10 @@ namespace GeoChat.DataLayer.DbContexts;
 
 public class GeoChatDBContext : DbContext
 {
-    DbSet<User> Users { get; set; }
-    DbSet<Room> Rooms { get; set; }
-    DbSet<RoomParticipant> Participants { get; set; }
-    DbSet<Chat> Chats {get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<RoomParticipant> Participants { get; set; }
+    public DbSet<Chat> Chats {get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
