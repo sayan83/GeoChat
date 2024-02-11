@@ -1,4 +1,4 @@
-﻿namespace GeoChat.RoomsAPI.Models;
+﻿namespace GeoChat.DataLayer.Models;
 
 public class LocationInfoDto
 {

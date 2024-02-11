@@ -27,12 +27,18 @@ public class GeoChatDBContext : DbContext
             new Room("Room1") {
                 RoomId = new Guid("0d0b9a01-7246-4fb1-ac70-2f2c5d5f084b"),
                 Description = "My first room",
-                UserId = "agent1"
+                UserId = "agent1",
+                Latitude = 22.5869952,  
+                Longitude = 88.4393111,
+                Range = 5000
             },
             new Room("Kings Room") {
                 RoomId = new Guid("65958d08-4e33-40da-a0ac-54442fba0abe"),
                 Description = "Private King room",
-                UserId = "sayan83"
+                UserId = "sayan83",
+                Latitude = 22.5869952,  
+                Longitude = 88.4393111,
+                Range = 1000
             }
         );
         modelBuilder.Entity<RoomParticipant>().HasData(

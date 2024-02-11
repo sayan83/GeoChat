@@ -12,6 +12,9 @@ public class Room
     [ForeignKey("UserId")]
     public User CreatedBy { get; set; }
     public string UserId { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+    public int Range { get; set; }
 
     public Room(string roomName) {
         RoomName = roomName;

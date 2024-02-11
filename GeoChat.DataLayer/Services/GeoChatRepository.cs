@@ -58,4 +58,13 @@ public class GeoChatRepository : IGeoChatRepository
         return (await _context.SaveChangesAsync() > 0); 
     }
 
+    public void CreateNewroom(RoomDto roomInfo)
+    {
+        Room newRoom = new Room(roomInfo.RoomName) {
+            RoomId = Guid.NewGuid(),
+            Description = roomInfo.Description,
+            UserId = roomInfo.CreatedBy
+        };
+        // _context.Rooms.Add();
+    }
 }

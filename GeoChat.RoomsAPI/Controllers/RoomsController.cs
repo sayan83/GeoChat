@@ -16,6 +16,7 @@ public class RoomsController : ControllerBase
 
     [HttpPost("/create")]
     public ActionResult<RoomDto> CreateRoom(RoomCreationDto roomInfo) {
+         
         return Ok();
     }
 

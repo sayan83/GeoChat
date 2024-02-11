@@ -8,5 +8,6 @@ public interface IGeoChatRepository
     Task<UserInfoDto> GetUserAsync(string userId);
     void AddNewUser(string userId, string name, string password);
     Task<bool> VerifyUserIdExists(string userId);
+    void CreateNewroom(RoomDto roomInfo);
     Task<bool> SaveChangesAsync();
 }
