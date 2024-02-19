@@ -2,6 +2,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "C#: GeoChat.ChatAPI Debug",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/GeoChat.ChatAPI/GeoChat.ChatAPI.csproj"
+        },
+    
+        {
+            "name": "C#: GeoChat.RoomsAPI",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/GeoChat.RoomsAPI/GeoChat.RoomsAPI.csproj"
+       },
+        {
             "name": "C#: GeoChat.AuthAPI [Default Configuration]",
             "type": "dotnet",
             "request": "launch",

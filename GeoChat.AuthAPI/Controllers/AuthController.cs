@@ -37,7 +37,7 @@ public class AuthController : ControllerBase
     
     [HttpPost("/new")]
     public async Task<ActionResult<UserDto>> NewAccount(NewUserDto userInfo) {
-        if(await _geoChatRepository.VerifyUserIdExists(userInfo.UserId)) {
+        if(await _geoChatRepository.VerifyUserIdExistsAsync(userInfo.UserId)) {
             return Conflict(); 
         }
 

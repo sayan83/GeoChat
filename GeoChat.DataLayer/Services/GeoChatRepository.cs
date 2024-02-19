@@ -1,4 +1,5 @@
 ﻿
+using System.Security.Cryptography.X509Certificates;
 using GeoChat.DataLayer.DbContexts;
 using GeoChat.DataLayer.Entities;
 using GeoChat.DataLayer.Models;
@@ -29,7 +30,7 @@ public class GeoChatRepository : IGeoChatRepository
     public GeoChatRepository() {
         _context = new GeoChatDBContext();
     }
-    public async Task<bool> VerifyUserIdExists(string userId)
+    public async Task<bool> VerifyUserIdExistsAsync(string userId)
     {
         User? exists = await _context.Users.Where(u => u.UserId == userId).FirstOrDefaultAsync();
         if(exists == null) 
@@ -58,13 +59,57 @@ public class GeoChatRepository : IGeoChatRepository
         return (await _context.SaveChangesAsync() > 0); 
     }
 
-    public void CreateNewroom(RoomDto roomInfo)
+    public Guid CreateNewroom(RoomDto roomInfo)
     {
         Room newRoom = new Room(roomInfo.RoomName) {
             RoomId = Guid.NewGuid(),
             Description = roomInfo.Description,
-            UserId = roomInfo.CreatedBy
+            UserId = roomInfo.CreatedBy,
+            Latitude = roomInfo.BaseLocation.Latitude,
+            Longitude = roomInfo.BaseLocation.Longitude,
+            Range = roomInfo.Range
         };
-        // _context.Rooms.Add();
+        _context.Rooms.Add(newRoom);
+        _context.Participants.Add(new RoomParticipant {
+            RoomId = newRoom.RoomId,
+            UserId = newRoom.UserId
+        });
+        //TODO Make sure both are saved while calling savechangesasync()
+        return newRoom.RoomId;
+    }
+
+    public async Task<Room> GetRoomDetailsAsync(Guid roomId)
+    {
+        Room? roomInfo = await _context.Rooms.Where(r => r.RoomId == roomId).FirstOrDefaultAsync();
+        if(roomInfo == null) {
+            return null;
+        }
+
+       return roomInfo;
+    }
+
+    public async void DeleteRoom(Room roomToDelete)
+    {
+        _context.Rooms.Remove(roomToDelete);
+        // TODO: Remove all participants from RoomParticipants table
+        _context.Participants.RemoveRange(await _context.Participants.Where(p => p.RoomId == roomToDelete.RoomId).ToListAsync());
+    }
+
+    public void JoinRoom(Guid roomId, string userId)
+    {
+        RoomParticipant participant = new RoomParticipant {
+            RoomId = roomId,
+            UserId = userId
+        };
+        _context.Participants.Add(participant);
+    }
+
+    public async Task<IEnumerable<Room>> ShowRoomsAsync()
+    {
+        List<Room> rooms = await _context.Rooms.ToListAsync();
+        if(rooms == null) {
+            return null;
+        }
+        return rooms;
     }
 }

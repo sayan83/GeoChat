@@ -7,4 +7,5 @@ public class RoomDto
     public string? Description { get; set; }
     public int Range { get; set; }  // Range of room in meters
     public string CreatedBy { get; set; } = String.Empty;
+    public LocationInfoDto BaseLocation { get; set; }
 }

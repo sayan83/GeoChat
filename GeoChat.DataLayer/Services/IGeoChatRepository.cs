@@ -1,4 +1,5 @@
-﻿using GeoChat.DataLayer.Models;
+﻿using GeoChat.DataLayer.Entities;
+using GeoChat.DataLayer.Models;
 
 namespace GeoChat.DataLayer.Services;
 
@@ -7,7 +8,11 @@ public interface IGeoChatRepository
     Task<bool> VerifyCredentialsAsync(string userId, string password);
     Task<UserInfoDto> GetUserAsync(string userId);
     void AddNewUser(string userId, string name, string password);
-    Task<bool> VerifyUserIdExists(string userId);
-    void CreateNewroom(RoomDto roomInfo);
+    Task<bool> VerifyUserIdExistsAsync(string userId);
+    Task<Room> GetRoomDetailsAsync(Guid roomId);
+    Guid CreateNewroom(RoomDto roomInfo);
+    void DeleteRoom(Room roomToDelete);
+    void JoinRoom(Guid roomId, string userId);
+    Task<IEnumerable<Room>> ShowRoomsAsync();
     Task<bool> SaveChangesAsync();
 }
