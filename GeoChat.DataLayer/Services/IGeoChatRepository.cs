@@ -14,5 +14,7 @@ public interface IGeoChatRepository
     void DeleteRoom(Room roomToDelete);
     void JoinRoom(Guid roomId, string userId);
     Task<IEnumerable<Room>> ShowRoomsAsync();
+    void AddNewMessage(string UserId, Guid RoomId, string Message);
+    Task<IEnumerable<ChatDto>> FetchMessagesAsync(Guid RoomId, int StartRange, int noOfMessages);
     Task<bool> SaveChangesAsync();
 }

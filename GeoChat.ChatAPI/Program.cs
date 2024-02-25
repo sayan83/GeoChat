@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+using GeoChat.DataLayer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +9,8 @@ builder.Services.AddControllers();
 // builder.Services.AddSwaggerGen(options => {
 //     options.CustomSchemaIds(type => type.ToString());
 // });
+
+builder.Services.AddScoped<IGeoChatRepository,GeoChatRepository>();
 
 var app = builder.Build();
 
