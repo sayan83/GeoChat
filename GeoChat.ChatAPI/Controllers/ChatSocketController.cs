@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.Json;
 using GeoChat.ChatAPI.Models;
+using GeoChat.ChatAPI.Services;
 using GeoChat.DataLayer.Models;
 using GeoChat.DataLayer.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +13,10 @@ namespace GeoChat.ChatAPI.Controllers;
 public class ChatSocketController : ControllerBase
 {
     private readonly IGeoChatRepository _geoChatRepository;
-    public ChatSocketController(IGeoChatRepository geoChatRepository) {
+    private readonly INotificationService _notificationService;
+    public ChatSocketController(IGeoChatRepository geoChatRepository,INotificationService notificationService) {
         _geoChatRepository = geoChatRepository;
+        _notificationService = notificationService;
     }
 
     [ApiExplorerSettings(IgnoreApi = true)]
@@ -55,6 +58,12 @@ public class ChatSocketController : ControllerBase
                         // TODO : Check how to handle status codes with WebSockets
                     // }
                     // TODO : Trigger the notification service asynchronously
+                    NotificationDto sendNotification = new NotificationDto {
+                        From = userId,
+                        Message = receivedPayloadJSON.Message,
+                        RoomId = receivedPayloadJSON.RoomId
+                    };
+                    NotificationQueueStore.notificationQueue.EnqueueNotification(sendNotification);
                     respMsg.Type = "SEND_ACK";  
                 }
                 else if(receivedPayloadJSON.Type == "loadmessage") {
@@ -79,9 +88,11 @@ public class ChatSocketController : ControllerBase
                 new ArraySegment<byte>(buffer), CancellationToken.None);
         }
 
+        ConnectionListStore.activeConnections.ActiveConnections.Remove(userId);
         await webSocket.CloseAsync(
             receiveResult.CloseStatus.Value,
             receiveResult.CloseStatusDescription,
             CancellationToken.None);
+        
     }
 }

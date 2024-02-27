@@ -112,6 +112,11 @@ public class GeoChatRepository : IGeoChatRepository
         }
         return rooms;
     }
+    public async Task<List<string>> GetRoomMembersAsync(Guid RoomId)
+    {
+        List<string> userIds = await _context.Participants.Where(r => r.RoomId == RoomId).Select(r => r.UserId).ToListAsync();
+        return userIds;
+    }
 
     public void AddNewMessage(string UserId, Guid RoomId, string Message)
     {
@@ -143,4 +148,5 @@ public class GeoChatRepository : IGeoChatRepository
         }
         return chats;
     }
+
 }

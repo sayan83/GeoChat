@@ -1,6 +1,9 @@
+using GeoChat.ChatAPI.Services;
 using GeoChat.DataLayer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHostedService<NotificationWorker>();
 
 builder.Services.AddControllers();
 // Add services to the container.
@@ -10,7 +13,9 @@ builder.Services.AddControllers();
 //     options.CustomSchemaIds(type => type.ToString());
 // });
 
-builder.Services.AddScoped<IGeoChatRepository,GeoChatRepository>();
+// TODO : WARNING change to scoped asap !!!
+builder.Services.AddSingleton<IGeoChatRepository,GeoChatRepository>();
+builder.Services.AddScoped<INotificationService,NotificationService>();
 
 var app = builder.Build();
 
