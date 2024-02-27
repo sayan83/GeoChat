@@ -10,8 +10,8 @@ namespace GeoChat.ChatAPI.Services;
 public class NotificationWorker : BackgroundService
 {
     private readonly IGeoChatRepository _geoChatRepository;
-    public NotificationWorker(IGeoChatRepository geoChatRepository) {
-        _geoChatRepository = geoChatRepository;
+    public NotificationWorker() {
+        _geoChatRepository = new GeoChatRepository();
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

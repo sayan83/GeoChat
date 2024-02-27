@@ -13,8 +13,7 @@ builder.Services.AddControllers();
 //     options.CustomSchemaIds(type => type.ToString());
 // });
 
-// TODO : WARNING change to scoped asap !!!
-builder.Services.AddSingleton<IGeoChatRepository,GeoChatRepository>();
+builder.Services.AddScoped<IGeoChatRepository,GeoChatRepository>();
 builder.Services.AddScoped<INotificationService,NotificationService>();
 
 var app = builder.Build();
