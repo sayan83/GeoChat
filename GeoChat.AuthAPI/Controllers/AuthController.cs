@@ -1,4 +1,5 @@
-﻿using GeoChat.AuthAPI.Models;
+﻿using GeoChat.AuthAPI.Filters;
+using GeoChat.AuthAPI.Models;
 using GeoChat.DataLayer.Models;
 using GeoChat.DataLayer.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -7,10 +8,13 @@ namespace GeoChat.AuthAPI;
 
 [ApiController]
 [Route("/api/auth")]
+[TypeFilter<AuthExceptionFilterAttribute>]
 public class AuthController : ControllerBase
 {
+    private readonly ILogger<AuthController> _logger;
     private readonly IGeoChatRepository _geoChatRepository;
-    public AuthController(IGeoChatRepository geoChatRepository) {
+    public AuthController(ILogger<AuthController> logger, IGeoChatRepository geoChatRepository) {
+        _logger = logger;
         _geoChatRepository = geoChatRepository;
     }
     
@@ -29,6 +33,8 @@ public class AuthController : ControllerBase
             return Unauthorized();
         } 
 
+
+        _logger.LogInformation($"Login : User {logInInfo.UserId} logged in");
         UserDto validatedUser = new UserDto {
             UserId = logInInfo.UserId,
         };
@@ -45,8 +51,11 @@ public class AuthController : ControllerBase
         bool saved = await _geoChatRepository.SaveChangesAsync();
 
         if(!saved) {
+            _logger.LogError("NewAccount : Failed to save new user info to DB");
             return StatusCode(500);
         }
+
+        _logger.LogInformation($"NewAccount : New user {userInfo.UserId} created");
         UserDto createdUser = new UserDto {
             UserId = userInfo.UserId
         };

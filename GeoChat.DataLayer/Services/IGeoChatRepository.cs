@@ -13,6 +13,8 @@ public interface IGeoChatRepository
     Guid CreateNewroom(RoomDto roomInfo);
     void DeleteRoom(Room roomToDelete);
     void JoinRoom(Guid roomId, string userId);
+    Task<bool> CheckParticipantValid(Guid roomId, string userId);
+    void LeaveRoom(Guid roomId, string userId);
     Task<IEnumerable<Room>> ShowRoomsAsync();
     Task<List<string>> GetRoomMembersAsync(Guid RoomId);
     void AddNewMessage(string UserId, Guid RoomId, string Message);

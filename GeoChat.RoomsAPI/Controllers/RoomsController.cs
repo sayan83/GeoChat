@@ -1,6 +1,7 @@
 ﻿using GeoChat.DataLayer.Entities;
 using GeoChat.DataLayer.Models;
 using GeoChat.DataLayer.Services;
+using GeoChat.RoomsAPI.Filters;
 using GeoChat.RoomsAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +10,13 @@ namespace GeoChat.RoomsAPI.Controllers;
 // TODO : Add versioning info 
 [ApiController]
 [Route("/api/rooms")]
+[TypeFilter<RoomExceptionFilterAttribute>]
 public class RoomsController : ControllerBase
 {
+    private readonly ILogger<RoomsController> _logger;
     private readonly IGeoChatRepository _geoChatRepository;
-    public RoomsController(IGeoChatRepository geoChatRepository) {
+    public RoomsController(ILogger<RoomsController> logger, IGeoChatRepository geoChatRepository) {
+        _logger = logger;
         _geoChatRepository = geoChatRepository;
     }
 
@@ -39,6 +43,7 @@ public class RoomsController : ControllerBase
     [HttpPost("search")]
     public async Task<ActionResult<IEnumerable<DataLayer.Models.RoomDto>>> SearchRooms(DataLayer.Models.LocationInfoDto locInfo) {
         // TODO : Calculate lat/long distances. For now just showing all rooms
+        // TODO : WARNING do not use datalayer entity object(Room) here
         IEnumerable<Room> roomsAvailable = await _geoChatRepository.ShowRoomsAsync();
         if(roomsAvailable == null) {
             return NotFound();
@@ -61,8 +66,11 @@ public class RoomsController : ControllerBase
         });
         bool saved = await _geoChatRepository.SaveChangesAsync();
         if(!saved) {
+            _logger.LogError("CreateRoom : Room adding to DB failed");
             return StatusCode(500);
         }
+
+        _logger.LogInformation($"CreateRoom : New room created {roomInfo.RoomName}");
         return CreatedAtAction("GetRoomInfo", 
                                 new { roomId },
                                 new Models.RoomDto {
@@ -85,18 +93,34 @@ public class RoomsController : ControllerBase
         // TODO : Check if location info matches within the range of room
         _geoChatRepository.JoinRoom(roomId,userId);
         bool saved = await _geoChatRepository.SaveChangesAsync();
-        if(!saved)
+        if(!saved) {
+            _logger.LogError("JoinRoom : Adding participant to DB failed");
             return StatusCode(500);
+        }
         return NoContent(); 
     }
 
-    [HttpPost("leave/{roomId}")]
-    public ActionResult LeaveRoom(Guid roomId) {
-        return Ok();
+    [HttpPost("leave/{roomId}/user/{userId}")]
+    public async Task<ActionResult> LeaveRoom(Guid roomId, string userId) {
+        bool participantValid = await _geoChatRepository.CheckParticipantValid(roomId,userId); 
+        if(!participantValid) {
+            _logger.LogInformation("LeaveRoom : User not part of room");
+            return BadRequest();
+        }
+
+        _geoChatRepository.LeaveRoom(roomId,userId);
+        bool saved = await _geoChatRepository.SaveChangesAsync();
+        if(!saved) {
+            _logger.LogError("LeaveRoom : Error saving changes to DB");
+            return StatusCode(500);
+        }
+        return NoContent();
     }
 
     [HttpDelete("delete/{roomId}")]
     public async Task<ActionResult> DeleteRoom(Guid roomId) {
+        // TODO : Make sure only creator can delete room
+        // TODO : Using DAL layer entity object(Room) outside. Bad practice
         DataLayer.Entities.Room roomToDelete = await _geoChatRepository.GetRoomDetailsAsync(roomId);
         if(roomToDelete == null) {
             return NotFound();
@@ -105,8 +129,11 @@ public class RoomsController : ControllerBase
         _geoChatRepository.DeleteRoom(roomToDelete);
         bool saved = await _geoChatRepository.SaveChangesAsync();
         if(!saved) {
+            _logger.LogError("DeleteRoom : Failed to delete room from DB");
             return StatusCode(500);
         }
+
+        _logger.LogInformation($"DeleteRoom : Deleted room {roomId} from db");
         return NoContent();
     }
 }

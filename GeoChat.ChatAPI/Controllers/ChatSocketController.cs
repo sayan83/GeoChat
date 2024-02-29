@@ -1,22 +1,25 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using GeoChat.ChatAPI.Filters;
 using GeoChat.ChatAPI.Models;
 using GeoChat.ChatAPI.Services;
-using GeoChat.DataLayer.Models;
 using GeoChat.DataLayer.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeoChat.ChatAPI.Controllers;
-
+[ApiController]
 [Route("/api/chat")]
+[TypeFilter<ChatSocketExceptionFilterAttribute>]
 public class ChatSocketController : ControllerBase
 {
+    private readonly ILogger<ChatSocketController> _logger;
     private readonly IGeoChatRepository _geoChatRepository;
-    private readonly INotificationService _notificationService;
-    public ChatSocketController(IGeoChatRepository geoChatRepository,INotificationService notificationService) {
+    // private readonly INotificationService _notificationService;
+    public ChatSocketController(ILogger<ChatSocketController> logger, IGeoChatRepository geoChatRepository) {
+        _logger = logger;
         _geoChatRepository = geoChatRepository;
-        _notificationService = notificationService;
+        // _notificationService = notificationService;
     }
 
     [ApiExplorerSettings(IgnoreApi = true)]
@@ -24,13 +27,14 @@ public class ChatSocketController : ControllerBase
     public async Task InitiateSocketConnection(string userId) {
         if (HttpContext.WebSockets.IsWebSocketRequest) {
             using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-            // Add connection to ConnectionList
             // TODO : Later use proper adapter like redis for scaling
             // TODO : Add check if username already exists in dictionary, then replace it. 
             ConnectionListStore.activeConnections.ActiveConnections.Add(userId,webSocket);
+            _logger.LogInformation("InitiateSocketConnection : Socket connection active. Opening receive channel");
             await ReceiveMsg(webSocket,userId);
         }
         else {
+            _logger.LogInformation("InitiateSocketConnection : Invalid Websocketrequest");
             HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
         }
     }
@@ -46,9 +50,9 @@ public class ChatSocketController : ControllerBase
 
         while (!receiveResult.CloseStatus.HasValue)
         {
+            // TODO : Add a global check if roomid is valid for this user
             try {
                 string payloadString = System.Text.Encoding.UTF8.GetString(buffer,0,receiveResult.Count);
-                //Console.WriteLine(jsonString);
                 MessagePayload? receivedPayloadJSON = JsonSerializer.Deserialize<MessagePayload>(payloadString);
                 ResponseMessagePayload respMsg = new ResponseMessagePayload();
                 if(receivedPayloadJSON.Type == "newmessage") {
@@ -72,8 +76,12 @@ public class ChatSocketController : ControllerBase
                     respMsg.Type = "CHATS";
                     respMsg.Chats = chats;
                 }
+                else {
+                    _logger.LogInformation("Invalid Message type received {0}",payloadString);
+                }
                 responseJSONstring = JsonSerializer.Serialize<ResponseMessagePayload>(respMsg); 
             } catch (Exception e) {
+                _logger.LogError("Exception encountered while decoding message payload - {0}", e.ToString());
                 Console.WriteLine(e);
             }
             

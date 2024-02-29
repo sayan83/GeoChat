@@ -91,7 +91,6 @@ public class GeoChatRepository : IGeoChatRepository
     public async void DeleteRoom(Room roomToDelete)
     {
         _context.Rooms.Remove(roomToDelete);
-        // TODO: Remove all participants from RoomParticipants table
         _context.Participants.RemoveRange(await _context.Participants.Where(p => p.RoomId == roomToDelete.RoomId).ToListAsync());
     }
 
@@ -102,6 +101,23 @@ public class GeoChatRepository : IGeoChatRepository
             UserId = userId
         };
         _context.Participants.Add(participant);
+    }
+    
+    public async Task<bool> CheckParticipantValid(Guid roomId, string userId)
+    {
+        RoomParticipant? participant = await _context.Participants.Where(p => p.RoomId == roomId && p.UserId == userId).FirstOrDefaultAsync();
+        if(participant == null) {
+            return false;
+        }
+        return true;
+    }
+    public void LeaveRoom(Guid roomId, string userId)
+    {
+        RoomParticipant participant = new RoomParticipant {
+            RoomId = roomId,
+            UserId = userId
+        };
+        _context.Participants.Remove(participant);
     }
 
     public async Task<IEnumerable<Room>> ShowRoomsAsync()

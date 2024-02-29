@@ -1,7 +1,16 @@
 using GeoChat.ChatAPI.Services;
 using GeoChat.DataLayer.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
+                    .WriteTo.Console()
+                    .WriteTo.File("logs/chats_log.txt", rollingInterval: RollingInterval.Day)
+                    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddHostedService<NotificationWorker>();
 
@@ -14,7 +23,7 @@ builder.Services.AddControllers();
 // });
 
 builder.Services.AddScoped<IGeoChatRepository,GeoChatRepository>();
-builder.Services.AddScoped<INotificationService,NotificationService>();
+// builder.Services.AddScoped<INotificationService,NotificationService>();
 
 var app = builder.Build();
 
