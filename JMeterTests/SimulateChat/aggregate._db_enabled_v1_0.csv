@@ -1,0 +1,6 @@
+Label,# Samples,Average,Median,90% Line,95% Line,99% Line,Min,Max,Error %,Throughput,Received KB/sec,Sent KB/sec
+WebSocket Open Connection,100,171,22,539,1233,1633,19,1655,0.000%,9.33968,1.67,1.61
+Send Message,5100,9,1,7,11,234,0,1592,0.000%,615.49602,46.76,76.29
+WebSocket Close,100,75,1,164,170,177,0,177,40.000%,5.35189,0.08,0.16
+GetMessages,249949,4,0,1,1,3,0,10008,0.000%,10542.81255,1100.60,0.00
+TOTAL,255249,4,0,1,2,4,0,10008,0.016%,10651.79652,1105.87,27.22

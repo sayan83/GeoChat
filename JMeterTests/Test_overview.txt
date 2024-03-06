@@ -1,0 +1,34 @@
+Users count - 100
+	- Generate 100 users with username : user1 password : password1
+Rooms - Here we can have 3 stages
+	1. Rooms have huge participants (total less rooms)
+	2. Large no of rooms present (with less participants)
+	3. Both
+	
+	Hence we will have a mix of both
+	- 10 Rooms
+		- Room1 - 5 members (user1 - user5)
+		- Room2 - 90 members (user1 - user90)
+		- Room3 - 50 members (user51-user100)
+		- Room4 - 3 members (user98-100)
+		- Room5 - 25 members (user61-85)
+		- Room6 - 2 members (user90-91)
+		- Room7 - 59 members (user30-87 + user5)
+		- Room8 - 15 members (user66-79 + user5)
+		- Room9 - 37 members (user21-56 + user5)
+		- Room10 - 58 members (user11-67 + user5)
+
+Chats - 
+	- User steps into different rooms and starts chatting. Chatting can be split into 2 parts, which can be setup in parallel
+		- Send messages
+		- Listening for receiving messages
+	Hence the flow
+	- Spawn up 100 threads(users)
+	- Open the socket connection
+		- parallel_controller starts
+			- loadmessages (few times maybe)
+			- while_loop
+				- sendmessage(wait for ACK)
+				- some delay
+			- while_loop
+				- receive msg
