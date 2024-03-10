@@ -41,6 +41,7 @@ public class ChatSocketController : ControllerBase
 
     private async Task ReceiveMsg(WebSocket webSocket, string userId)
     {
+        // TODO : Maybe reconsider using this logic as a service layer instead of a controller
         var buffer = new byte[1024 * 4];
         byte[] respBuffer;
         string responseJSONstring = String.Empty;
@@ -55,29 +56,42 @@ public class ChatSocketController : ControllerBase
                 string payloadString = System.Text.Encoding.UTF8.GetString(buffer,0,receiveResult.Count);
                 MessagePayload? receivedPayloadJSON = JsonSerializer.Deserialize<MessagePayload>(payloadString);
                 ResponseMessagePayload respMsg = new ResponseMessagePayload();
-                if(receivedPayloadJSON.Type == "newmessage") {
-                    _geoChatRepository.AddNewMessage(userId,receivedPayloadJSON.RoomId,receivedPayloadJSON.Message);
-                    // bool saved = await _geoChatRepository.SaveChangesAsync();
-                    // if(!saved) {
-                        // TODO : Check how to handle status codes with WebSockets
-                    // }
-                    // TODO : Trigger the notification service asynchronously
-                    NotificationDto sendNotification = new NotificationDto {
-                        From = userId,
-                        Message = receivedPayloadJSON.Message,
-                        RoomId = receivedPayloadJSON.RoomId
-                    };
-                    NotificationQueueStore.notificationQueue.EnqueueNotification(sendNotification);
-                    respMsg.Type = "SEND_ACK";  
+                if(receivedPayloadJSON == null || receivedPayloadJSON.RoomId == Guid.Empty) {
+                    _logger.LogError("Invalid Message type in websocket from {0}",userId);
+                    respMsg.Type = "INVALID_MSG_TYPE";
                 }
-                else if(receivedPayloadJSON.Type == "loadmessage") {
-                    // TODO : Try to perform join b/w users and chat
-                    IEnumerable<GeoChat.DataLayer.Models.ChatDto> chats = await _geoChatRepository.FetchMessagesAsync(receivedPayloadJSON.RoomId,receivedPayloadJSON.MsgStartRange,10);
-                    respMsg.Type = "CHATS";
-                    respMsg.Chats = chats;
+                else if(await _geoChatRepository.CheckParticipantValid(receivedPayloadJSON.RoomId,userId)){
+                    switch (receivedPayloadJSON.Type) {
+                        case "newmessage" : 
+                            _geoChatRepository.AddNewMessage(userId,receivedPayloadJSON.RoomId,receivedPayloadJSON.Message);
+                            // bool saved = await _geoChatRepository.SaveChangesAsync();
+                            // if(!saved) {
+                                // TODO : Check how to handle status codes with WebSockets
+                            // }
+                            // TODO : Trigger the notification service asynchronously
+                            NotificationDto sendNotification = new NotificationDto {
+                                From = userId,
+                                Message = receivedPayloadJSON.Message,
+                                RoomId = receivedPayloadJSON.RoomId
+                            };
+                            NotificationQueueStore.notificationQueue.EnqueueNotification(sendNotification);
+                            respMsg.Type = "SEND_ACK";  
+                        break;
+                        case "loadmessage" : 
+                            // TODO : Try to perform join b/w users and chat
+                            IEnumerable<GeoChat.DataLayer.Models.ChatDto> chats = await _geoChatRepository.FetchMessagesAsync(receivedPayloadJSON.RoomId,receivedPayloadJSON.MsgStartRange,10);
+                            respMsg.Type = "CHATS";
+                            respMsg.Chats = chats;
+                        break;    
+                        default: 
+                            _logger.LogInformation("Invalid Message type received {0}",payloadString);
+                            respMsg.Type = "INVALID_REQUEST";
+                        break;
+                    }
                 }
                 else {
-                    _logger.LogInformation("Invalid Message type received {0}",payloadString);
+                    _logger.LogWarning("Invalid user for this room - {0}, {1}",userId, receivedPayloadJSON.RoomId);
+                    respMsg.Type = "INVALID_USER";
                 }
                 responseJSONstring = JsonSerializer.Serialize<ResponseMessagePayload>(respMsg); 
             } catch (Exception e) {

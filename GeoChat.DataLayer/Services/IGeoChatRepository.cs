@@ -16,7 +16,7 @@ public interface IGeoChatRepository
     Task<bool> CheckParticipantValid(Guid roomId, string userId);
     void LeaveRoom(Guid roomId, string userId);
     Task<IEnumerable<Room>> ShowRoomsAsync();
-    Task<List<string>> GetRoomMembersAsync(Guid RoomId);
+    Task<List<string>> GetRoomMembersAsync(Guid roomId);
     void AddNewMessage(string UserId, Guid RoomId, string Message);
     Task<IEnumerable<ChatDto>> FetchMessagesAsync(Guid RoomId, int StartRange, int noOfMessages);
     Task<bool> SaveChangesAsync();
