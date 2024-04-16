@@ -29,7 +29,7 @@ public class ChatSocketController : ControllerBase
             using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
             // TODO : Later use proper adapter like redis for scaling
             // TODO : Add check if username already exists in dictionary, then replace it. 
-            ConnectionListStore.activeConnections.ActiveConnections.Add(userId,webSocket);
+            ConnectionListStore.activeConnections.ActiveConnections.TryAdd(userId,webSocket);
             _logger.LogInformation("InitiateSocketConnection : Socket connection active. Opening receive channel");
             await ReceiveMsg(webSocket,userId);
         }
@@ -51,7 +51,6 @@ public class ChatSocketController : ControllerBase
 
         while (!receiveResult.CloseStatus.HasValue)
         {
-            // TODO : Add a global check if roomid is valid for this user
             try {
                 string payloadString = System.Text.Encoding.UTF8.GetString(buffer,0,receiveResult.Count);
                 MessagePayload? receivedPayloadJSON = JsonSerializer.Deserialize<MessagePayload>(payloadString);
@@ -110,7 +109,7 @@ public class ChatSocketController : ControllerBase
                 new ArraySegment<byte>(buffer), CancellationToken.None);
         }
 
-        ConnectionListStore.activeConnections.ActiveConnections.Remove(userId);
+        ConnectionListStore.activeConnections.ActiveConnections.TryRemove(userId,out WebSocket? value);
         await webSocket.CloseAsync(
             receiveResult.CloseStatus.Value,
             receiveResult.CloseStatusDescription,

@@ -1,3 +1,5 @@
+using GeoChat.AuthAPI.DbContexts;
+using GeoChat.AuthAPI.Services;
 using GeoChat.DataLayer.DbContexts;
 using GeoChat.DataLayer.Services;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +23,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IGeoChatRepository,GeoChatRepository>();
+builder.Services.AddDbContext<AuthDBContext>(
+                        dbContextOptions => dbContextOptions.UseSqlite("Data Source=GeoChatAuth.db"));
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 var app = builder.Build();
 

@@ -25,4 +25,8 @@
     <ProjectReference Include="..\GeoChat.DataLayer\GeoChat.DataLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities/" />
+  </ItemGroup>
+
 </Project>
