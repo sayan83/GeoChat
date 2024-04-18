@@ -1,6 +1,5 @@
 ﻿using GeoChat.AuthAPI.Filters;
 using GeoChat.AuthAPI.Models;
-using GeoChat.AuthAPI.Models;
 using GeoChat.AuthAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 

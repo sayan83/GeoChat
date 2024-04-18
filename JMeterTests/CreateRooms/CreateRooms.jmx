@@ -5,12 +5,14 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
         <stringProp name="HTTPSampler.domain">localhost</stringProp>
-        <stringProp name="HTTPSampler.port">7127</stringProp>
-        <stringProp name="HTTPSampler.protocol">https</stringProp>
+        <stringProp name="HTTPSampler.port">5078</stringProp>
+        <stringProp name="HTTPSampler.protocol">http</stringProp>
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
           <collectionProp name="Arguments.arguments"/>
         </elementProp>
@@ -26,7 +28,7 @@
         </collectionProp>
       </HeaderManager>
       <hashTree/>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="RoomCreation TG" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="RoomCreation TG" enabled="false">
         <intProp name="ThreadGroup.num_threads">10</intProp>
         <intProp name="ThreadGroup.ramp_time">3</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
@@ -40,7 +42,7 @@
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Create Rooms"/>
         <hashTree>
           <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Room Creation CSV">
-            <stringProp name="filename">C:/Users/sbiswas/source/repos/GeoChat-main/GeoChat-main/JMeterTests/CreateRooms/CreateRoomData.csv</stringProp>
+            <stringProp name="filename">/Users/sayantan/Documents/DotNet_Projects/GeoChat/JMeterTests/CreateRooms/CreateRoomData.csv</stringProp>
             <stringProp name="fileEncoding"></stringProp>
             <stringProp name="variableNames"></stringProp>
             <boolProp name="ignoreFirstLine">false</boolProp>
@@ -91,7 +93,7 @@
       </ThreadGroup>
       <hashTree>
         <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="Load Participants Data CSV">
-          <stringProp name="filename">C:/Users/sbiswas/source/repos/GeoChat-main/GeoChat-main/JMeterTests/CreateRooms/JoinRoomData.csv</stringProp>
+          <stringProp name="filename">/Users/sayantan/Documents/DotNet_Projects/GeoChat/JMeterTests/CreateRooms/JoinRoomData.csv</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="variableNames"></stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
