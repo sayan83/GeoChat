@@ -81,7 +81,7 @@ public class RoomsController : ControllerBase
 
     [HttpPost("leave/{roomId}/user/{userId}")]
     public async Task<ActionResult> LeaveRoom(Guid roomId, string userId) {
-        bool participantValid = await _roomRepository.CheckParticipantValid(roomId,userId); 
+        bool participantValid = await _roomRepository.CheckParticipantValidAsync(roomId,userId); 
         if(!participantValid) {
             _logger.LogInformation("LeaveRoom : User not part of room");
             return BadRequest();
@@ -113,5 +113,14 @@ public class RoomsController : ControllerBase
 
         _logger.LogInformation($"DeleteRoom : Deleted room {roomId} from db");
         return NoContent();
+    }
+
+    [HttpPost("checkparticipation")]
+    public async Task<ActionResult> CheckParticipation(ParticipantDto participant) {
+        if( await _roomRepository.CheckParticipantValidAsync(participant.RoomId, participant.UserId)) {
+            return Ok();
+        }
+
+        return Unauthorized();
     }
 }

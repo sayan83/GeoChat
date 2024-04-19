@@ -8,7 +8,7 @@ public interface IRoomRepository
     Guid CreateNewroom(RoomCreationDto roomInfo);
     void DeleteRoom(RoomDto roomToDelete);
     void JoinRoom(Guid roomId, string userId);
-    Task<bool> CheckParticipantValid(Guid roomId, string userId);
+    Task<bool> CheckParticipantValidAsync(Guid roomId, string userId);
     void LeaveRoom(Guid roomId, string userId);
     Task<IEnumerable<RoomDto>> ShowRoomsAsync();
     Task<List<string>> GetRoomMembersAsync(Guid roomId);

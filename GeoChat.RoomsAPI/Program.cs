@@ -27,7 +27,6 @@ builder.Services.AddDbContext<RoomDBContext>(dbContextOptions => {
     dbContextOptions.UseSqlite("Data Source=GeoChatRooms.db");
 });
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-builder.Services.AddScoped<IGeoChatRepository,GeoChatRepository>();
 
 var app = builder.Build();
 

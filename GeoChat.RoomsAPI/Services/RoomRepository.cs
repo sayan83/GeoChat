@@ -75,7 +75,7 @@ public class RoomRepository : IRoomRepository
         _context.Participants.Add(participant);
     }
     
-    public async Task<bool> CheckParticipantValid(Guid roomId, string userId)
+    public async Task<bool> CheckParticipantValidAsync(Guid roomId, string userId)
     {
         RoomParticipant? participant = await _context.Participants.Where(p => p.RoomId == roomId && p.UserId == userId).FirstOrDefaultAsync();
         if(participant == null) {

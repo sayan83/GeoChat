@@ -5,6 +5,8 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Chat TG">
@@ -51,11 +53,11 @@
               <stringProp name="ConstantTimer.delay">1000</stringProp>
             </ConstantTimer>
             <hashTree/>
-            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Send_Loop" enabled="true">
+            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Send_Loop">
               <stringProp name="WhileController.condition">${__jexl3(${__jm__Send_Loop__idx} &lt; 100)}</stringProp>
             </WhileController>
             <hashTree>
-              <eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler" testname="Send Message" enabled="true">
+              <eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler" testname="Send Message">
                 <boolProp name="createNewConnection">false</boolProp>
                 <boolProp name="TLS">false</boolProp>
                 <stringProp name="server"></stringProp>
@@ -65,7 +67,7 @@
                 <stringProp name="payloadType">Text</stringProp>
                 <stringProp name="requestData">{
 	&quot;Type&quot; : &quot;newmessage&quot;,
-	&quot;RoomId&quot; : &quot;F22156EE-66F4-46D7-BFD8-34F04B9CD882&quot;,
+	&quot;RoomId&quot; : &quot;FDD055DB-290A-46DF-ABC6-8E6E9879CE5B&quot;,
 	&quot;Message&quot; : &quot;testmsg_${__threadNum}_${__jm__Send_Loop__idx} from ${username}&quot;
 }</stringProp>
                 <stringProp name="readTimeout">6000</stringProp>
@@ -89,11 +91,11 @@
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
-            <RunTime guiclass="RunTimeGui" testclass="RunTime" testname="Runtime Controller" enabled="true">
+            <RunTime guiclass="RunTimeGui" testclass="RunTime" testname="Runtime Controller">
               <stringProp name="RunTime.seconds">15</stringProp>
             </RunTime>
             <hashTree>
-              <eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler" testname="GetMessages" enabled="true">
+              <eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler" testname="GetMessages">
                 <boolProp name="TLS">false</boolProp>
                 <stringProp name="server"></stringProp>
                 <stringProp name="port">80</stringProp>
@@ -107,7 +109,7 @@
               <hashTree/>
             </hashTree>
           </hashTree>
-          <eu.luminis.jmeter.wssampler.CloseWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.CloseWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.CloseWebSocketSampler" testname="WebSocket Close">
+          <eu.luminis.jmeter.wssampler.CloseWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.CloseWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.CloseWebSocketSampler" testname="WebSocket Close" enabled="true">
             <stringProp name="statusCode">1000</stringProp>
             <stringProp name="readTimeout">6000</stringProp>
           </eu.luminis.jmeter.wssampler.CloseWebSocketSampler>

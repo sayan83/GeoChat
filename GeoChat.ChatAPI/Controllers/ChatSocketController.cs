@@ -4,8 +4,10 @@ using System.Text.Json;
 using GeoChat.ChatAPI.Filters;
 using GeoChat.ChatAPI.Models;
 using GeoChat.ChatAPI.Services;
-using GeoChat.DataLayer.Services;
+using GeoChat.RoomsAPI;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GeoChat.ChatAPI.Controllers;
 [ApiController]
@@ -14,11 +16,13 @@ namespace GeoChat.ChatAPI.Controllers;
 public class ChatSocketController : ControllerBase
 {
     private readonly ILogger<ChatSocketController> _logger;
-    private readonly IGeoChatRepository _geoChatRepository;
+    private readonly IChatRepository _chatRepository; 
+    private readonly IHttpClientFactory _httpClientFactory;
     // private readonly INotificationService _notificationService;
-    public ChatSocketController(ILogger<ChatSocketController> logger, IGeoChatRepository geoChatRepository) {
+    public ChatSocketController(ILogger<ChatSocketController> logger, IChatRepository chatRepository, IHttpClientFactory httpClientFactory) {
         _logger = logger;
-        _geoChatRepository = geoChatRepository;
+        _chatRepository = chatRepository; 
+        _httpClientFactory = httpClientFactory;
         // _notificationService = notificationService;
     }
 
@@ -37,6 +41,34 @@ public class ChatSocketController : ControllerBase
             _logger.LogInformation("InitiateSocketConnection : Invalid Websocketrequest");
             HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
         }
+    }
+
+    private async Task<bool> ValidateParticipation(Guid roomId, string userId) {
+        // var roomServiceRequestMsg = new HttpRequestMessage(
+        //     HttpMethod.Post,
+        //     "http://localhost")
+        //     {
+        //         Headers = {
+        //             { HeaderNames.ContentType, "application/json" }
+        //         }
+        //     };
+        
+        ParticipantDto participant = new ParticipantDto() {
+            RoomId = roomId,
+            UserId = userId
+        };
+        
+        var roomServiceClient = _httpClientFactory.CreateClient("RoomsService");
+        var validParticipationRespMsg = await roomServiceClient.PostAsync("checkparticipation",new StringContent(
+            JsonSerializer.Serialize(participant),
+            Encoding.UTF8,
+            Application.Json
+        ));
+
+        if(validParticipationRespMsg.IsSuccessStatusCode) {
+            return true;
+        }
+        return false;
     }
 
     private async Task ReceiveMsg(WebSocket webSocket, string userId)
@@ -59,11 +91,11 @@ public class ChatSocketController : ControllerBase
                     _logger.LogError("Invalid Message type in websocket from {0}",userId);
                     respMsg.Type = "INVALID_MSG_TYPE";
                 }
-                else if(await _geoChatRepository.CheckParticipantValid(receivedPayloadJSON.RoomId,userId)){
+                else if(await ValidateParticipation(receivedPayloadJSON.RoomId,userId)){
                     switch (receivedPayloadJSON.Type) {
                         case "newmessage" : 
-                            _geoChatRepository.AddNewMessage(userId,receivedPayloadJSON.RoomId,receivedPayloadJSON.Message);
-                            // bool saved = await _geoChatRepository.SaveChangesAsync();
+                            _chatRepository.AddNewMessage(userId,receivedPayloadJSON.RoomId,receivedPayloadJSON.Message);
+                            // bool saved = await _chatRepository.SaveChangesAsync();
                             // if(!saved) {
                                 // TODO : Check how to handle status codes with WebSockets
                             // }
@@ -78,7 +110,7 @@ public class ChatSocketController : ControllerBase
                         break;
                         case "loadmessage" : 
                             // TODO : Try to perform join b/w users and chat
-                            IEnumerable<GeoChat.DataLayer.Models.ChatDto> chats = await _geoChatRepository.FetchMessagesAsync(receivedPayloadJSON.RoomId,receivedPayloadJSON.MsgStartRange,10);
+                            IEnumerable<ChatDto> chats = await _chatRepository.FetchMessagesAsync(receivedPayloadJSON.RoomId,receivedPayloadJSON.MsgStartRange,10);
                             respMsg.Type = "CHATS";
                             respMsg.Chats = chats;
                         break;    
