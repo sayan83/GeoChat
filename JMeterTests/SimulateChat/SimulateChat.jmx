@@ -20,7 +20,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config">
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding"></stringProp>
           <stringProp name="filename">/Users/sayantan/Documents/DotNet_Projects/GeoChat/JMeterTests/SimulateChat/userlist.csv</stringProp>
@@ -32,9 +32,9 @@
           <stringProp name="variableNames"></stringProp>
         </CSVDataSet>
         <hashTree/>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Web Socket Connection"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Web Socket Connection" enabled="true"/>
         <hashTree>
-          <eu.luminis.jmeter.wssampler.OpenWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.OpenWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.OpenWebSocketSampler" testname="WebSocket Open Connection">
+          <eu.luminis.jmeter.wssampler.OpenWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.OpenWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.OpenWebSocketSampler" testname="WebSocket Open Connection" enabled="true">
             <boolProp name="TLS">false</boolProp>
             <stringProp name="server">localhost</stringProp>
             <stringProp name="port">5148</stringProp>
@@ -53,11 +53,11 @@
               <stringProp name="ConstantTimer.delay">1000</stringProp>
             </ConstantTimer>
             <hashTree/>
-            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Send_Loop">
+            <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="Send_Loop" enabled="true">
               <stringProp name="WhileController.condition">${__jexl3(${__jm__Send_Loop__idx} &lt; 100)}</stringProp>
             </WhileController>
             <hashTree>
-              <eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler" testname="Send Message">
+              <eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler" testname="Send Message" enabled="true">
                 <boolProp name="createNewConnection">false</boolProp>
                 <boolProp name="TLS">false</boolProp>
                 <stringProp name="server"></stringProp>
@@ -76,7 +76,7 @@
               </eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler>
               <hashTree/>
             </hashTree>
-            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait Before next send" enabled="true">
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait Before next send" enabled="false">
               <stringProp name="ConstantTimer.delay">10000</stringProp>
             </ConstantTimer>
             <hashTree/>
@@ -91,11 +91,11 @@
             <boolProp name="IfController.useExpression">true</boolProp>
           </IfController>
           <hashTree>
-            <RunTime guiclass="RunTimeGui" testclass="RunTime" testname="Runtime Controller">
+            <RunTime guiclass="RunTimeGui" testclass="RunTime" testname="Runtime Controller" enabled="true">
               <stringProp name="RunTime.seconds">15</stringProp>
             </RunTime>
             <hashTree>
-              <eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler" testname="GetMessages">
+              <eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler" testname="GetMessages" enabled="true">
                 <boolProp name="TLS">false</boolProp>
                 <stringProp name="server"></stringProp>
                 <stringProp name="port">80</stringProp>
@@ -150,7 +150,7 @@
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename">C:\Users\sbiswas\source\repos\GeoChat-main\GeoChat-main\JMeterTests\SimulateChat\ConDic_ResultTree_Dump_100msg.csv</stringProp>
+        <stringProp name="filename">C:\Users\sbiswas\source\repos\GeoChat-main\GeoChat-main\JMeterTests\SimulateChat\AllIsolated_ResultTree_Dump_100msg.csv</stringProp>
       </ResultCollector>
       <hashTree/>
       <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report">
@@ -187,7 +187,7 @@
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename">C:\Users\sbiswas\source\repos\GeoChat-main\GeoChat-main\JMeterTests\SimulateChat\ConDic_Aggregate_Dump_100msg.csv</stringProp>
+        <stringProp name="filename">C:\Users\sbiswas\source\repos\GeoChat-main\GeoChat-main\JMeterTests\SimulateChat\AllIsolated_Aggregate_Dump_100msg.csv</stringProp>
       </ResultCollector>
       <hashTree/>
     </hashTree>

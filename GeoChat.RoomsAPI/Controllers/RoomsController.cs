@@ -123,4 +123,10 @@ public class RoomsController : ControllerBase
 
         return Unauthorized();
     }
+
+    [HttpPost("getroommembers")]
+    public async Task<ActionResult<IEnumerable<string>>> GetRoomParticipants(Guid roomId) {
+        List<string> participants = await _roomRepository.GetRoomMembersAsync(roomId);
+        return Ok(participants);
+    }
 }

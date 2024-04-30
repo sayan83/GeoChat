@@ -3,10 +3,7 @@ using System.Text;
 using System.Text.Json;
 using GeoChat.ChatAPI.Filters;
 using GeoChat.ChatAPI.Models;
-using GeoChat.ChatAPI.Services;
-using GeoChat.RoomsAPI;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace GeoChat.ChatAPI.Controllers;

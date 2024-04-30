@@ -1,4 +1,3 @@
-using GeoChat.DataLayer.Services;
 using GeoChat.RoomsAPI.DbContexts;
 using GeoChat.RoomsAPI.Services;
 using Microsoft.EntityFrameworkCore;

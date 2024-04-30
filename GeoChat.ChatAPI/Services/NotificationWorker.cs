@@ -3,17 +3,16 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 using GeoChat.ChatAPI.Models;
-using GeoChat.DataLayer.Services;
 
 namespace GeoChat.ChatAPI.Services;
 
 public class NotificationWorker : BackgroundService
 {
     private readonly ILogger<NotificationWorker> _logger;
-    private readonly IGeoChatRepository _geoChatRepository;
-    public NotificationWorker(ILogger<NotificationWorker> logger) {
+    private readonly IHttpClientFactory _httpClientFactory;
+    public NotificationWorker(ILogger<NotificationWorker> logger, IHttpClientFactory httpClientFactory) {
         _logger = logger;
-        _geoChatRepository = new GeoChatRepository();
+        _httpClientFactory = httpClientFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -23,6 +22,7 @@ public class NotificationWorker : BackgroundService
     }
 
     private async Task BackgroundNotificationProcessing(CancellationToken stoppingToken) {
+        var roomServiceClient = _httpClientFactory.CreateClient("RoomsService");
         while(!stoppingToken.IsCancellationRequested) {
             NotificationDto? notificationMsg = NotificationQueueStore.notificationQueue.DequeueNotification();
             if(notificationMsg == null) {
@@ -34,7 +34,8 @@ public class NotificationWorker : BackgroundService
             string notificationMsgString = JsonSerializer.Serialize<NotificationDto>(notificationMsg);
             byte[] notificationByte = Encoding.UTF8.GetBytes(notificationMsgString);
             Guid roomId = notificationMsg.RoomId;
-            List<string> userIds = await _geoChatRepository.GetRoomMembersAsync(roomId);
+            var roomMembersResponse = await roomServiceClient.PostAsync("getroommembers", new StringContent(""));
+            List<string> userIds = new List<string>();
             List<Task> pushNotificationTasks = new List<Task>();
             foreach (string userId in userIds) {
                 if(userId != notificationMsg.From &&

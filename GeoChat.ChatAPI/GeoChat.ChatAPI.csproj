@@ -22,11 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GeoChat.AuthAPI\GeoChat.AuthAPI.csproj" />
-    <ProjectReference Include="..\GeoChat.RoomsAPI\GeoChat.RoomsAPI.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Entities/" />
   </ItemGroup>
 

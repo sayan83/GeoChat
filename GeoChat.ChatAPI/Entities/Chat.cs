@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace GeoChat.ChatAPI.Entities;
+﻿namespace GeoChat.ChatAPI.Entities;
 
 // TODO : set up indexes
 public class Chat

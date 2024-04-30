@@ -1,8 +1,6 @@
 using GeoChat.ChatAPI;
 using GeoChat.ChatAPI.Services;
-using GeoChat.DataLayer.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Net.Http.Headers;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,8 +23,9 @@ builder.Services.AddControllers();
 //     options.CustomSchemaIds(type => type.ToString());
 // });
 
+string? roomServiceURI = builder.Configuration.GetValue<string>("Services:RoomService");
 builder.Services.AddHttpClient("RoomsService", httpClient => {
-    httpClient.BaseAddress = new Uri("http://localhost:5078/api/rooms/");
+    httpClient.BaseAddress = new Uri(roomServiceURI);
     // httpClient.DefaultRequestHeaders.Add(
     //     HeaderNames.ContentType, "application/json"
     // );
