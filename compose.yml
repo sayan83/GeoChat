@@ -1,0 +1,42 @@
+services:
+
+  auth:
+    image: authserver-image:latest
+    ports:
+      - 5003:5003
+    networks:
+      - backend
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  
+  rooms:
+    image: roomserver-image:latest
+    ports:
+      - 5004:5004
+    networks:
+      - backend
+    depends_on:
+      - auth
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  chat:
+    image: chatserver-image:latest
+    ports:
+      - 5005:5005
+    networks:
+      - backend
+    depends_on:
+      - rooms
+      - auth
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  backend:
