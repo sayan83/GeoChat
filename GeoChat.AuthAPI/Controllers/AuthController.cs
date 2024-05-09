@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
         _authRepository = authRepository; 
     }
     
-    [HttpGet("/userdetails/{userId}")] 
+    [HttpGet("userdetails/{userId}")] 
     public async Task<ActionResult<UserDto>> GetUserInfo(string userId) {
         UserDto user = await _authRepository.GetUserAsync(userId);
         if(user == null)
@@ -25,7 +25,7 @@ public class AuthController : ControllerBase
         
         return Ok(user);
     }
-    [HttpPost("/login")] 
+    [HttpPost("login")] 
     public async Task<ActionResult<UserDto>> Login(LogInDto logInInfo) {
         bool isValid = await _authRepository.VerifyCredentialsAsync(logInInfo.UserId,logInInfo.Password);
         if(!isValid) {
@@ -40,7 +40,7 @@ public class AuthController : ControllerBase
         return Ok(validatedUser);
     }
     
-    [HttpPost("/new")]
+    [HttpPost("new")]
     public async Task<ActionResult<UserDto>> NewAccount(NewUserDto userInfo) {
         if(await _authRepository.VerifyUserIdExistsAsync(userInfo.UserId)) {
             return Conflict(); 
