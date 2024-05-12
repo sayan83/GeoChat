@@ -34,8 +34,12 @@ public class NotificationWorker : BackgroundService
             string notificationMsgString = JsonSerializer.Serialize<NotificationDto>(notificationMsg);
             byte[] notificationByte = Encoding.UTF8.GetBytes(notificationMsgString);
             Guid roomId = notificationMsg.RoomId;
-            var roomMembersResponse = await roomServiceClient.PostAsync("getroommembers", new StringContent(""));
-            List<string> userIds = new List<string>();
+            var roomMembersResponse = await roomServiceClient.PostAsync($"getroommembers?roomId={roomId}", new StringContent(""));
+            var userIdss = await roomMembersResponse.Content.ReadAsStreamAsync();
+            List<string>? userIds = JsonSerializer.Deserialize<List<string>>(userIdss);
+            if(userIds != null && userIds.Count == 0) {
+                continue;
+            }
             List<Task> pushNotificationTasks = new List<Task>();
             foreach (string userId in userIds) {
                 if(userId != notificationMsg.From &&
